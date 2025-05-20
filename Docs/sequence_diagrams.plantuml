@@ -1,0 +1,85 @@
+@startuml sequence_diagram
+
+title FastApiRestServices Sequence Diagram
+participant "Client" as Client
+participant "main.py" as Main
+participant "Routers" as Routers
+participant "FastApiRestServices" as FastApiRestServices
+participant "MongoDB" as MongoDB
+participant "SQLServer" as SQLServer
+participant "MessagingServer" as MessagingServer
+participant "ExceptionHandlers" as ExceptionHandlers
+participant "Logger" as Logger
+
+
+group Client Request and Response Flow
+    Client -> Main: Client Request
+    activate Main
+    Main -> Routers: Receive Request
+    activate Routers
+    Routers -> FastApiRestServices: Route Request
+    activate FastApiRestServices
+    FastApiRestServices --> FastApiRestServices: Process Data
+    FastApiRestServices --> Routers: Response to Request
+    Routers --> Main: Response to Client
+    Main --> Client: Client Response
+    deactivate FastApiRestServices
+    deactivate Routers
+    deactivate Main
+
+
+     Client -> Main: Client Request
+    activate Main
+    Main -> Routers: Receive Request
+    activate Routers
+    Routers -> FastApiRestServices: Route Request
+    activate FastApiRestServices
+    FastApiRestServices -> MongoDB: Request Service
+    alt MongoDB
+        activate MongoDB
+        MongoDB --> FastApiRestServices: Receive DB Service
+        deactivate MongoDB
+    else SQLServer
+        activate SQLServer
+        SQLServer --> FastApiRestServices: Receive DB Service
+        deactivate SQLServer
+    else MessagingServer
+        activate MessagingServer
+        MessagingServer --> FastApiRestServices: Receive Message Service
+        deactivate MessagingServer
+    end
+    FastApiRestServices --> Routers: Response to Request
+    Routers --> Main: Response to Client
+    Main --> Client: Client Response
+    deactivate FastApiRestServices
+    deactivate Routers
+    deactivate Main
+end
+
+group Handlers Error and Exception
+    Main -> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+    activate ExceptionHandlers
+    ExceptionHandlers --> Main: Exception Raised
+
+    Routers -> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+    ExceptionHandlers --> Routers: Exception Raised
+
+    FastApiRestServices -> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+    ExceptionHandlers --> FastApiRestServices: Exception Raised
+    deactivate ExceptionHandlers
+end
+
+group Handlers Logger
+    Main -> Logger: Log (message)
+    activate Logger
+    Logger --> Main: Message Logged
+
+    Routers -> Logger: Log (message)
+    Logger --> Routers: Message Logged
+    
+    FastApiRestServices -> Logger: Log (message)
+    Logger --> FastApiRestServices: Message Logged
+    deactivate Logger
+end
+
+@enduml

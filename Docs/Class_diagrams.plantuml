@@ -1,0 +1,60 @@
+@startuml
+
+class Client {
+    + sendRequest()
+    + receiveResponse()
+}
+
+class Main {
+    + receiveRequest()
+    + sendResponse()
+}
+
+class Routers {
+    + routeRequest()
+}
+
+class FastApiRestServices {
+    + processData()
+}
+
+class MongoDB {
+    + requestService()
+    + receiveDBService()
+}
+
+
+class ExceptionHandlers {
+    + raiseException(errCode, errMsgParams)
+}
+
+class Logger {
+    + log(message)
+}
+
+Client --> Main: Client Request
+Main --> Routers: Receive Request
+Routers --> FastApiRestServices: Route Request
+FastApiRestServices --> FastApiRestServices: Process Data
+FastApiRestServices --> Routers: Response to Request
+Routers --> Main: Response to Client
+Main --> Client: Client Response
+
+Client --> Main: Client Request
+Main --> Routers: Receive Request
+Routers --> FastApiRestServices: Route Request
+FastApiRestServices --> MongoDB: Request Service
+MongoDB --> FastApiRestServices: Receive DB Service
+FastApiRestServices --> Routers: Response to Request
+Routers --> Main: Response to Client
+Main --> Client: Client Response
+
+Main --> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+Routers --> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+FastApiRestServices --> ExceptionHandlers: Raise Exception (errCode, errMsgParams)
+
+Main --> Logger: Log (message)
+Routers --> Logger: Log (message)
+FastApiRestServices --> Logger: Log (message)
+
+@enduml
