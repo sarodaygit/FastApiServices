@@ -1,4 +1,4 @@
-
+import os
 import motor.motor_asyncio
 from Utils.ConfigParserUtil import ConfigParserUtil
 
@@ -26,7 +26,9 @@ class MotorConnection:
         mongo_uri = f"mongodb://{username}:{password}@{host}:{port}/?authSource={auth_source}"
 
         if use_ssl:
-            ssl_ca_file = self.config.getValue("MongoDB", "SSLCAFile")
+            ssl_ca_file = os.getenv("MONGO_CERT_PATH")
+            if not ssl_ca_file:
+                raise ValueError("MONGO_CERT_PATH environment variable is not set")
             self.client = motor.motor_asyncio.AsyncIOMotorClient(
                 mongo_uri,
                 tls=True,

@@ -1,10 +1,6 @@
 from fastapi import FastAPI
 from Utils.ConfigParserUtil import ConfigParserUtil
 from Utils.LoggerUtil import LoggerUtil
-from Routers.RegressionConfigRouter import RegressionConfigRouter
-from Routers.RegressionConfigMotorRouter import RegressionConfigMotorRouter
-from Routers.TestPlannerRouter import TestPlannerRouter
-from Routers.LegacyPiTicketsMotorRouter import LegacyPiTicketsRouterMotor
 from Routers.MovieStatsRouter import MovieStatsRouter
 from Handlers.Middlewares import TimeTrackerMiddleware
 from Handlers.OpenTelemetryServices import OpenTelemetryServices
@@ -29,9 +25,7 @@ app.add_middleware(TimeTrackerMiddleware)
 global_prefix = config.getValue("General", "prefix_url")
 
 # Register routers
-regressionRouterMotor = RegressionConfigMotorRouter(global_prefix).router
-legacyPITicketsRouterMotor = LegacyPiTicketsRouterMotor(global_prefix).router
-testPlannerRouter = TestPlannerRouter(global_prefix).router
+
 movie_router = MovieStatsRouter(prefix="/movies").router
 
 
@@ -42,9 +36,7 @@ def read_root():
     return {"message": "Hello World"}
 
 # Include routers in the FastAPI app
-app.include_router(regressionRouterMotor)
-app.include_router(legacyPITicketsRouterMotor)
-app.include_router(testPlannerRouter)
+
 app.include_router(movie_router)
 
 # To run:
