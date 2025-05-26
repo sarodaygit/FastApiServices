@@ -4,14 +4,21 @@ A FastAPI-based microservice for handling REST API requests, integrating with Mo
 
 ## Features
 
-- FastAPI web server with modular routers
-- MongoDB integration (async with Motor)
-- SQL Server integration (planned)
-- Custom middleware for request timing
-- Centralized configuration management
-- Structured logging utility
-- OpenTelemetry tracing with Jaeger exporter
-- Docker support for easy deployment
+✅ FastAPI server with modular router architecture
+
+✅ MongoDB integration using async Motor client
+
+🚧 SQL Server integration (planned)
+
+⚙️ Middleware for request logging and execution time
+
+🧠 Centralized config with dynamic environment support
+
+📊 Structured logging utility
+
+🔍 OpenTelemetry tracing with Jaeger support
+
+🐳 Docker and Docker Compose support
 
 ## Project Structure
 
@@ -33,142 +40,102 @@ A FastAPI-based microservice for handling REST API requests, integrating with Mo
 └── README.md             # This file
 ```
 
-## Getting Started
 
-### Prerequisites
+⚙️ Getting Started
+✅ Prerequisites
+Python 3.8+
 
-- Python 3.8+
-- Docker (optional, for containerized deployment)
-- MongoDB instance (local or remote)
+Docker & Docker Compose
 
-### Installation
+MongoDB instance (local or TLS-enabled)
 
-1. Clone the repository:
-    ```sh
-    git clone <repo-url>
+
+🛠️ Setup Instructions
+
+1️⃣ Clone and Install
+    git clone https://github.com/sarodaygit/FastApiServices.git
     cd FastApiServices
-    ```
-
-2. Install dependencies:
-    ```sh
     cd Sources
     pip install -r requirements.txt
-    ```
 
-3. Set environment variable for configuration (optional):
-    ```sh
-    export ENV=dev  # or prod
-    ```
+2️⃣ TLS Certificate Setup (Optional)
+    If using MongoDB with SSL (UseSSL=true in config):
+    mkdir -p Sources/FastApiServices/certs
 
-4. Run the FastAPI server:
-    ```sh
-    cd FastApiServices
-    uvicorn main:app --host 0.0.0.0 --port 8004 --reload
-    ```
+    Sources/FastApiServices/certs/
+    ├── ca.pem         # Root certificate
+    └── mongodb.pem    # Mongo server certificate + private key (combined)
 
-### Required Environment Variables
-
-Set the following environment variables before running the application:
-
-- `ENV` — Application environment (e.g., `dev`, `prod`)
-- `MONGO_CERT_PATH` — Path to MongoDB CA certificate file (required if SSL is enabled)
-
-**Note:**  
-If your MongoDB configuration has `UseSSL = true`, you must set `MONGO_CERT_PATH` to the path of your CA certificate file.  
-If `MONGO_CERT_PATH` is not set and SSL is enabled, the application will raise an error.
-
-Example:
-```sh
-export ENV=dev
-
-export MONGO_CERT_PATH="/path/to/your/ca-certificate.crt"
-### Running with Docker
-
-```sh
-./launch.sh
+    Note : > These files should be excluded from version control. Use `.gitignore`.
 ```
 
-### Running Tests
+3️⃣ Running Locally (Without Docker)
+    Use .vscode/launch.json profiles:
+        Dev Mode: Dev Python: FastAPI
+        Prod Mode: Prod Python: FastAPI
 
-```sh
-cd Tests
-pytest
-```
+        "env": {
+                "ENV": "prod",
+                "MONGO_CERT_PATH": "./Sources/FastApiServices/certs/ca.pem"
+                }
 
-## Configuration
+4️⃣ Running in Docker
+    Use the helper script:
+    # Launch Docker containers
+    ./launch.sh start dev         # or prod
+    ./launch.sh status prod       # View container status
+    ./launch.sh restart dev       # Restart
+    ./launch.sh shutdown all      # Stop and clean
 
-Configuration files are located in `Sources/FastApiServices/Conf/`. The environment variable `ENV` selects which config file to use (`FastApiServices.dev.conf`, `FastApiServices.prod.conf`, etc).
 
-## API Endpoints
 
-- `/test` — Health check endpoint
-- `/movies/count` — Get total movie count
-- `/movies/latest` — Get the latest movie
-- `/movies/highrated` — Get movies with IMDb rating > 9.0
+📦 API Endpoints
+    Endpoint	Description
+    /test	Health check
+    /movies/count	Get total movie count
+    /movies/latest	Get the most recent movie
+    /movies/highrated	Get IMDb rating > 9.0 movies
+    ## API Endpoints
+
+📌 Configuration
+    All config files reside in:
+    Sources/FastApiServices/Conf/
+        ├── FastApiServices.dev.conf
+        └── FastApiServices.prod.conf
+
+🧪 Running Tests
+    cd Tests
+    pytest
 
 ## License
 
-[MIT](LICENSE) (add your license file if needed)
-```
+
 ```
 FastApiServices
 ├─ Deployment
 │  └─ Dockerfile
 ├─ Docs
-│  ├─ Class_diagram.png
-│  ├─ Class_diagrams.plantuml
-│  ├─ sequence_diagrams.plantuml
-│  └─ sequence_diagrams.png
 ├─ README.md
 ├─ Sources
-│  ├─ .pylintrc
 │  ├─ FastApiServices
 │  │  ├─ Conf
-│  │  │  ├─ FastApiServices.conf
-│  │  │  ├─ FastApiServices.dev.conf
-│  │  │  ├─ FastApiServices.prod copy.conf
-│  │  │  ├─ FastApiServices.prod.conf
-│  │  │  └─ __init__.py
-│  │  ├─ FastApiServices.log
 │  │  ├─ Handlers
-│  │  │  ├─ ErrorCodes.py
-│  │  │  ├─ FastApiServicesException.py
-│  │  │  ├─ Middlewares.py
-│  │  │  ├─ OpenTelemetryServices.py
-│  │  │  └─ __init__.py
 │  │  ├─ Routers
-│  │  │  ├─ MovieStatsRouter.py
-│  │  │  └─ __init__.py
 │  │  ├─ Stores
 │  │  │  ├─ Mongo
 │  │  │  │  ├─ Models
-│  │  │  │  │  ├─ MoviStats.py
-│  │  │  │  │  ├─ __init__.py
-│  │  │  │  │  └─ user.py
-│  │  │  │  ├─ __init__.py
 │  │  │  │  ├─ motorstore.py
 │  │  │  │  └─ store.py
 │  │  │  ├─ SQLServer
 │  │  │  │  ├─ Models
-│  │  │  │  │  └─ __init__.py
-│  │  │  │  ├─ __init__.py
 │  │  │  │  └─ store.py
-│  │  │  └─ __init__.py
 │  │  ├─ Utils
-│  │  │  ├─ ConfigParserUtil.py
-│  │  │  ├─ JSONEncoder.py
-│  │  │  ├─ LoggerUtil.py
-│  │  │  └─ __init__.py
-│  │  ├─ __init__.py
-│  │  ├─ main.py
-│  │  └─ run.sh
-│  ├─ __init__.py
+│  │  └─ main.py
 │  └─ requirements.txt
 ├─ Tests
-│  ├─ __init__.py
 │  └─ test_TestPlanner.py
-├─ cleancache.sh
+├─ docker-compose.dev.yml
+├─ docker-compose.prod.yml
 ├─ launch.sh
-└─ notes.txt
 
 ```
