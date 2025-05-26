@@ -26,13 +26,17 @@ class MotorConnection:
         mongo_uri = f"mongodb://{username}:{password}@{host}:{port}/?authSource={auth_source}"
 
         if use_ssl:
-            ssl_ca_file = os.getenv("MONGO_CERT_PATH")
-            if not ssl_ca_file:
-                raise ValueError("MONGO_CERT_PATH environment variable is not set")
+            # Dynamically resolve the certs/ca.pem relative to this file
+            base_dir = os.path.dirname(os.path.abspath(__file__))  # /Stores/Mongo
+            cert_path = os.path.abspath(os.path.join(base_dir, '..', '..', 'certs', 'ca.pem'))
+
+            if not os.path.exists(cert_path):
+                raise FileNotFoundError(f"❌ SSL CA file not found at {cert_path}")
+
             self.client = motor.motor_asyncio.AsyncIOMotorClient(
                 mongo_uri,
                 tls=True,
-                tlsCAFile=ssl_ca_file,
+                tlsCAFile=cert_path,
                 serverSelectionTimeoutMS=server_timeout
             )
         else:

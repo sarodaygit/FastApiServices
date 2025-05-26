@@ -27,8 +27,7 @@
       "cwd": "${workspaceFolder}/Sources/FastApiServices",
       "jinja": true,
       "env": {
-        "ENV": "prod",
-        "MONGO_CERT_PATH": "{}/certs/ca.pem"
+        "ENV": "prod"
       }
     }
   ]
