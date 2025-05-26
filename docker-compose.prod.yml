@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  fastapi-app-prod:
+    image: fastapiservices
+    container_name: fastapi-prod
+    build:
+      context: .
+      dockerfile: Deployment/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      ENV: prod
+    volumes:
+      - ./Sources/FastApiServices/certs:/app/FastApiServices/certs:ro
+    networks:
+      - fastapi_mongo_net
+      
+    restart: unless-stopped
+
+networks:
+  fastapi_mongo_net:
+    external: true

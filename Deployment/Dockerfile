@@ -11,10 +11,9 @@ COPY Sources/requirements.txt /app
 # Install dependencies
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Set environment variables (defaults, can be overridden via docker run)
+# Set environment variables (default to 'dev', can override via docker run)
 ENV PYTHONPATH=/app/FastApiServices
 ENV ENV=dev
-ENV MONGO_CERT_PATH=/certs/ca.pem
 
 # Run the FastAPI app with Uvicorn (with reload for dev)
 CMD ["uvicorn", "FastApiServices.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
