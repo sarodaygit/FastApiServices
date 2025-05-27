@@ -52,15 +52,21 @@ MongoDB instance (local or TLS-enabled)
 
 🛠️ Setup Instructions
 
+Make sure Mongodb server is available for the testing. 
+Clone the git repo and follow the instructions if you don't have mongodb
+    repo - git@github.com:sarodaygit/docker_mongodb.git
+
 1️⃣ Clone and Install
+
     git clone https://github.com/sarodaygit/FastApiServices.git
-    cd FastApiServices
-    cd Sources
-    pip install -r requirements.txt
+        cd FastApiServices
+        cd Sources
+        pip install -r requirements.txt
 
 2️⃣ TLS Certificate Setup (Optional)
+
     If using MongoDB with SSL (UseSSL=true in config):
-    mkdir -p Sources/FastApiServices/certs
+        mkdir -p Sources/FastApiServices/certs
 
     Sources/FastApiServices/certs/
     ├── ca.pem         # Root certificate

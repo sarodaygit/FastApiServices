@@ -13,7 +13,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Set environment variables (default to 'dev', can override via docker run)
 ENV PYTHONPATH=/app/FastApiServices
-ENV ENV=prod
 
 # Run the FastAPI app with Uvicorn (with reload for dev)
 CMD ["uvicorn", "FastApiServices.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
